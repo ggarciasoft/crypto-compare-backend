@@ -11,16 +11,18 @@ function getMarket() {
     return new Observable(subscriber => {
         console.log(`looking for data on: ${market}`);
         http.post(getMarketUrl).subscribe(body => {
-            listTokenData = new Array();
+            let listTokenData = new Array();
 
             for (let pair in body.data) {
                 if (pair.indexOf("DAI") == -1) {
-                    var bodyPair = body.data[pair];
-                    if (bodyPair.highestBid != "N/A" && bodyPair.lowestAsk != "N/A") {
+                    let bodyPair = body.data[pair];
+                    let sell = bodyPair.last;
+                    let buy = bodyPair.last;
+                    if (sell != "N/A") {
                         listTokenData.push({
-                            CurrencyPair: getCurrencyPair(bodyPair),
-                            Buy: new bignumber(bodyPair.highestBid).toFixed(),
-                            Sell: new bignumber(bodyPair.lowestAsk).toFixed()
+                            CurrencyPair: getCurrencyPair(pair),
+                            Buy: new bignumber(sell).toFixed(),
+                            Sell: new bignumber(buy).toFixed()
                         });
                     }
                 }
@@ -31,6 +33,9 @@ function getMarket() {
             });
             subscriber.complete();
             console.log(`finish for data on: ${market}`);
+        }, err => {
+            console.log(`error for data on ${market}: ${err}`);
+            subscriber.error(err);
         });
     })
 }

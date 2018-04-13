@@ -8,7 +8,7 @@ var Observable = require('rxjs/Observable').Observable
 app.use(cors())
 app.use(bodyParser.json())
 
-app.get('/currencies', async (req, res) => {
+app.get('/currencies', (req, res) => {
     let exchanges = [];
     let totalExchanges = 0;
     let completedExchanges = 0;
