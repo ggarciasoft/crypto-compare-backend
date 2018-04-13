@@ -1,0 +1,24 @@
+{
+  "name": "cryptocompare",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "grunt": "grunt",
+    "start": "nodemon server"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "bignumber.js": "^6.0.0",
+    "body-parser": "^1.17.2",
+    "cors": "^2.8.3",
+    "errorhandler": "^1.5.0",
+    "express": "^4.16.3",
+    "morgan": "^1.9.0",
+    "npm": "^5.8.0",
+    "rxjs": "^5.5.8"
+  }
+}
