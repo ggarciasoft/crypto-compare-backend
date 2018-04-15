@@ -19,7 +19,7 @@ function getMarket() {
             }
             subscriber.next({
                 Exchange: market,
-                Markets: response.data.Data.map(market => {
+                Currencies: response.data.Data.map(market => {
                     return {
                         CurrencyPair: getCurrencyPair(market.Label),
                         Buy: market.BidPrice ? new bignumber(market.BidPrice).toFixed() : 0,

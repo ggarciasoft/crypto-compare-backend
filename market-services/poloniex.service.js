@@ -28,7 +28,7 @@ function getMarket() {
             }
             subscriber.next({
                 Exchange: market,
-                Markets: markets
+                Currencies: markets
             });
             subscriber.complete();
             console.log(`finish for data on: ${market}`);

@@ -29,7 +29,7 @@ function getMarket() {
             }
             subscriber.next({
                 Exchange: market,
-                Markets: listTokenData
+                Currencies: listTokenData
             });
             subscriber.complete();
             console.log(`finish for data on: ${market}`);

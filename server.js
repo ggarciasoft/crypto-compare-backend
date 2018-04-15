@@ -31,8 +31,10 @@ app.get('/currencies', (req, res) => {
                     completedExchanges++;
                     if (completedExchanges >= totalExchanges) {
                         if (errors) {
+                            console.log("Error");
                             res.status(500).send(errors)
                         } else {
+                            console.log("Send Info");
                             res.status(200).send(exchanges);
                         }
                     }
