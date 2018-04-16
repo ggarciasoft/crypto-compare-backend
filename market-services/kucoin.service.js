@@ -3,27 +3,27 @@ var Observable = require('rxjs/Observable').Observable
 var Constants = require('../models/constants')
 var bignumber = require("../utils/bignumber")
 
-var hostUrl = "https://www.cryptopia.co.nz";
-var getMarketUrl = `${hostUrl}/api/GetMarkets`;
-var market = Constants.CRYPTOPIA;
+var hostUrl = "https://api.kucoin.com";
+var getMarketUrl = `${hostUrl}/v1/open/tick`;
+var market = Constants.KUCOIN;
 
 function getMarket() {
     return new Observable(subscriber => {
         console.log(`looking for data on: ${market}`);
         http.get(getMarketUrl).subscribe(response => {
-            if (!response.data.Success) {
-                var msg = `Error on ${market}: getMarket: ${response.data.Message} `;;
+            if (!response.data.success) {
+                var msg = `Error on ${market}: getMarket: ${response.data.msg} `;;
                 console.log(msg);
                 subscriber.error(msg);
                 return;
             }
             subscriber.next({
                 Exchange: market,
-                Currencies: response.data.Data.map(market => {
+                Currencies: response.data.data.map(market => {
                     return {
-                        CurrencyPair: getCurrencyPair(market.Label),
-                        Buy: market.BidPrice ? market.BidPrice : 0,
-                        Sell: market.AskPrice ? market.AskPrice : 0
+                        CurrencyPair: getCurrencyPair(market.symbol),
+                        Buy: new bignumber(market.buy).toFixed(),
+                        Sell: new bignumber(market.sell).toFixed()
                     }
                 })
             });
@@ -37,7 +37,7 @@ function getMarket() {
 }
 
 function getCurrencyPair(symbol) {
-    var currency = symbol.split("/");
+    var currency = symbol.split("-");
     return `${currency[1]}-${currency[0]}`
 }
 

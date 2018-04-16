@@ -19,6 +19,11 @@
     "express": "^4.16.3",
     "morgan": "^1.9.0",
     "npm": "^5.8.0",
-    "rxjs": "^5.5.8"
+    "rxjs": "^5.5.8",
+    "socket.io-client": "2.0.3",
+    "web3": "0.17.0-alpha",
+    "ethereumjs-tx": "1.3.3",
+    "ethereumjs-util": "4.5.0",
+    "js-sha256": "0.3.0"
   }
 }

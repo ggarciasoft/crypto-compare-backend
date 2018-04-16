@@ -40,8 +40,7 @@ function getMarket() {
 }
 
 function getCurrencyPair(symbol){
-    var currency = symbol.split("_");
-    return `${currency[0]}-${currency[1]}`
+    return symbol.replace("_", "-");
 }
 
 module.exports = {

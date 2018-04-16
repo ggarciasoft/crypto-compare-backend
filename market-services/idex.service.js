@@ -21,8 +21,8 @@ function getMarket() {
                     if (sell != "N/A") {
                         listTokenData.push({
                             CurrencyPair: getCurrencyPair(pair),
-                            Buy: new bignumber(sell).toFixed(),
-                            Sell: new bignumber(buy).toFixed()
+                            Buy: new bignumber(buy).toFixed(),
+                            Sell: new bignumber(sell).toFixed()
                         });
                     }
                 }
@@ -41,8 +41,7 @@ function getMarket() {
 }
 
 function getCurrencyPair(symbol) {
-    var currency = symbol.split("_");
-    return `${currency[0]}-${currency[1]}`
+    return symbol.replace("_", "-");
 }
 
 module.exports = {
