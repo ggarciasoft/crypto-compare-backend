@@ -16,9 +16,9 @@ function getMarket() {
             for (let pair in body.data) {
                 if (pair.indexOf("DAI") == -1) {
                     let bodyPair = body.data[pair];
-                    let sell = bodyPair.last;
-                    let buy = bodyPair.last;
-                    if (sell != "N/A") {
+                    let sell = bodyPair.lowestAsk;
+                    let buy = bodyPair.highestBid;
+                    if (sell != "N/A" || buy != "N/A") {
                         listTokenData.push({
                             CurrencyPair: getCurrencyPair(pair),
                             Buy: new bignumber(buy).toFixed(),
@@ -36,6 +36,7 @@ function getMarket() {
         }, err => {
             console.log(`error for data on ${market}: ${err}`);
             subscriber.error(err);
+            subscriber.complete();
         });
     })
 }

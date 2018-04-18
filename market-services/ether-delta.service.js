@@ -58,8 +58,12 @@ function getMarket() {
                     Currencies: listTokenData
                 });
                 subscriber.complete();
+            }).catch(err => {
+                console.log(`error for data on ${market}: ${err}`);
+                subscriber.error(err);
+                subscriber.complete();
             });
-    })
+    });
 }
 
 function getCurrencyPair(symbol) {

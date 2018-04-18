@@ -7,6 +7,7 @@ const markets = {
     CRYPTOPIA: "Cryptopia",
     KUCOIN: "KuCoin",
     ETHERDELTA: "EtherDelta",
+    YOBIT: "Yobit",
 }
 
 module.exports = markets;

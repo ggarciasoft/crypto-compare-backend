@@ -32,6 +32,7 @@ function getMarket() {
         }, err => {
             console.log(`error for data on ${market}: ${err}`);
             subscriber.error(err);
+            subscriber.complete();
         });
     })
 }

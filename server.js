@@ -19,27 +19,51 @@ app.get('/currencies', (req, res) => {
         }
     }
 
+    let marketsObservables = [];
+
     for (var exchange in market) {
-        market[exchange].getMarket()
-            .subscribe(
-                data => {
-                    exchanges.push(data);
-                }, err => {
-                    errors += err;
-                    console.error(err);
-                }, _ => {
-                    completedExchanges++;
-                    if (completedExchanges >= totalExchanges) {
-                        if (errors) {
-                            console.log("Error");
-                            res.status(500).send(errors)
-                        } else {
-                            console.log("Send Info");
-                            res.status(200).send(exchanges);
-                        }
-                    }
-                });
+        marketsObservables.push(market[exchange].getMarket());
     }
+    Observable.forkJoin(marketsObservables).subscribe(data => {
+        console.log("log");
+        res.status(200).send(data);
+    }, err => {
+        res.status(500).send(err.message);
+    });
 })
+
+// app.get('/currencies', (req, res) => {
+//     let exchanges = [];
+//     let totalExchanges = 0;
+//     let completedExchanges = 0;
+//     let errors = "";
+//     for (var k in market) {
+//         if (market.hasOwnProperty(k)) {
+//             ++totalExchanges;
+//         }
+//     }
+
+//     for (var exchange in market) {
+//         market[exchange].getMarket()
+//             .subscribe(
+//                 data => {
+//                     exchanges.push(data);
+//                 }, err => {
+//                     errors += err;
+//                     console.error(err);
+//                 }, _ => {
+//                     completedExchanges++;
+//                     if (completedExchanges >= totalExchanges) {
+//                         //if (errors) {
+//                             console.log("Error: " + errors);
+//                             //res.status(500).send(errors)
+//                         //} else {
+//                             console.log("Send Info");
+//                             res.status(200).send(exchanges);
+//                         //}
+//                     }
+//                 });
+//     }
+// })
 
 app.listen(process.env.PORT || 3000)

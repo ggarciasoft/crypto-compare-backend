@@ -22,7 +22,7 @@ function getMarket() {
                 Currencies: response.data.Data.map(market => {
                     return {
                         CurrencyPair: getCurrencyPair(market.Label),
-                        Buy: market.BidPrice ? market.BidPrice : 0,
+                        Buy: market.BidPrice ? market.BidPrice : 0,//TODO: fix number
                         Sell: market.AskPrice ? market.AskPrice : 0
                     }
                 })
@@ -32,6 +32,7 @@ function getMarket() {
         }, err => {
             console.log(`error for data on ${market}: ${err}`);
             subscriber.error(err);
+            subscriber.complete();
         });
     })
 }
