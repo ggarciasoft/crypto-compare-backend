@@ -29,7 +29,6 @@ function getMarket() {
                 }
 
                 if (alltokens.length == 50 || bodyCurrencies.data.pairs.length == i) {
-                    console.log("tokens on yobit: " + i);
                     marketsObservables.push(http.get(getMarketUrl + alltokens.join("-")));
                     alltokens = [];
                 }

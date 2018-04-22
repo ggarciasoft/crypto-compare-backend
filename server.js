@@ -4,11 +4,12 @@ var bodyParser = require('body-parser')
 var app = express()
 var market = require("./market-services/market")
 var Observable = require('rxjs/Observable').Observable
+var cache = require("./utils/cache");
 
 app.use(cors())
 app.use(bodyParser.json())
 
-app.get('/currencies', (req, res) => {
+app.get('/currencies', cache(30), (req, res) => {
     let exchanges = [];
     let totalExchanges = 0;
     let completedExchanges = 0;
@@ -31,39 +32,5 @@ app.get('/currencies', (req, res) => {
         res.status(500).send(err.message);
     });
 })
-
-// app.get('/currencies', (req, res) => {
-//     let exchanges = [];
-//     let totalExchanges = 0;
-//     let completedExchanges = 0;
-//     let errors = "";
-//     for (var k in market) {
-//         if (market.hasOwnProperty(k)) {
-//             ++totalExchanges;
-//         }
-//     }
-
-//     for (var exchange in market) {
-//         market[exchange].getMarket()
-//             .subscribe(
-//                 data => {
-//                     exchanges.push(data);
-//                 }, err => {
-//                     errors += err;
-//                     console.error(err);
-//                 }, _ => {
-//                     completedExchanges++;
-//                     if (completedExchanges >= totalExchanges) {
-//                         //if (errors) {
-//                             console.log("Error: " + errors);
-//                             //res.status(500).send(errors)
-//                         //} else {
-//                             console.log("Send Info");
-//                             res.status(200).send(exchanges);
-//                         //}
-//                     }
-//                 });
-//     }
-// })
 
 app.listen(process.env.PORT || 3000)
