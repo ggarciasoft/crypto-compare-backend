@@ -10,16 +10,6 @@ app.use(cors())
 app.use(bodyParser.json())
 
 app.get('/currencies', cache(30), (req, res) => {
-    let exchanges = [];
-    let totalExchanges = 0;
-    let completedExchanges = 0;
-    let errors = "";
-    for (var k in market) {
-        if (market.hasOwnProperty(k)) {
-            ++totalExchanges;
-        }
-    }
-
     let marketsObservables = [];
 
     for (var exchange in market) {

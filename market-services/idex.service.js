@@ -4,35 +4,56 @@ var Constants = require('../models/constants')
 var bignumber = require("../utils/bignumber")
 
 var hostUrl = "https://api.idex.market";
-var getMarketUrl = `${hostUrl}/returnTicker`;
+var getMarketUrl = `${hostUrl}/returnOrderBook`;
+var getAllCurrenciesUrl = `${hostUrl}/returnTicker`;
 var market = Constants.IDEX;
 
 function getMarket() {
     return new Observable(subscriber => {
         console.log(`looking for data on: ${market}`);
-        http.post(getMarketUrl).subscribe(body => {
-            let listTokenData = new Array();
+        http.get(getAllCurrenciesUrl).subscribe(bodyCurrencies => {
+            if (!bodyCurrencies.data) {
+                var msg = `Error getting currencies on ${market}`;
+                console.log(msg);
+                subscriber.error(msg);
+                return;
+            }
 
-            for (let pair in body.data) {
-                if (pair.indexOf("DAI") == -1) {
-                    let bodyPair = body.data[pair];
-                    let sell = bodyPair.lowestAsk;
-                    let buy = bodyPair.highestBid;
-                    if (sell != "N/A" || buy != "N/A") {
-                        listTokenData.push({
-                            CurrencyPair: getCurrencyPair(pair),
-                            Buy: new bignumber(buy).toFixed(),
-                            Sell: new bignumber(sell).toFixed()
-                        });
-                    }
+            let marketsObservables = [];
+            for (let pair in bodyCurrencies.data) {
+                if (pair.indexOf("ETH") != -1) {
+                    marketsObservables.push(http.post(getMarketUrl, {
+                        market: pair
+                    }));
                 }
             }
-            subscriber.next({
-                Exchange: market,
-                Currencies: listTokenData
-            });
-            subscriber.complete();
-            console.log(`finish for data on: ${market}`);
+
+            Observable.forkJoin(marketsObservables)
+                .subscribe(responses => {
+                    let listTokenData = new Array();
+                    responses.forEach(response => {
+                        if (response.data.bids && response.data.asks) {
+                            let ask = response.data.asks[0];
+                            let bid = response.data.bids[0];
+                            if (bid && ask && bid.price && ask.price) {
+                                listTokenData.push({
+                                    CurrencyPair: getCurrencyPair(ask),
+                                    Buy: new bignumber(bid.price).toFixed(),
+                                    Sell: new bignumber(ask.price).toFixed()
+                                });
+                            }
+                        }
+                    })
+                    subscriber.next({
+                        Exchange: market,
+                        Currencies: listTokenData
+                    });
+                    subscriber.complete();
+                    console.log(`finish for data on: ${market}`);
+                }, err => {
+                    console.log(`error for data on ${market}: ${err}`);
+                    subscriber.complete();
+                });
         }, err => {
             console.log(`error for data on ${market}: ${err}`);
             subscriber.error(err);
@@ -42,7 +63,7 @@ function getMarket() {
 }
 
 function getCurrencyPair(symbol) {
-    return symbol.replace("_", "-");
+    return `${symbol.params.buySymbol}-${symbol.params.sellSymbol}`
 }
 
 module.exports = {
