@@ -21,7 +21,7 @@ function getMarket() {
 
             let marketsObservables = [];
             for (let pair in bodyCurrencies.data) {
-                if (pair.indexOf("ETH") != -1) {
+                if (pair.indexOf("ETH") != -1 && pair.indexOf(":") === -1) {
                     marketsObservables.push(http.post(getMarketUrl, {
                         market: pair
                     }));

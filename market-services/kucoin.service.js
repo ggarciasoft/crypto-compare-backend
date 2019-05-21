@@ -4,22 +4,22 @@ var Constants = require('../models/constants')
 var bignumber = require("../utils/bignumber")
 
 var hostUrl = "https://api.kucoin.com";
-var getMarketUrl = `${hostUrl}/v1/open/tick`;
+var getMarketUrl = `${hostUrl}/api/v1/market/allTickers`;
 var market = Constants.KUCOIN;
 
 function getMarket() {
     return new Observable(subscriber => {
         console.log(`looking for data on: ${market}`);
         http.get(getMarketUrl).subscribe(response => {
-            if (!response.data.success) {
-                var msg = `Error on ${market}: getMarket: ${response.data.msg} `;;
+            if (response.data.data.msg) {
+                var msg = `Error on ${market}: getMarket: ${response.data.msg} `;
                 console.log(msg);
                 subscriber.error(msg);
                 return;
             }
             subscriber.next({
                 Exchange: market,
-                Currencies: response.data.data.map(market => {
+                Currencies: response.data.data.ticker.map(market => {
                     return {
                         CurrencyPair: getCurrencyPair(market.symbol),
                         Buy: new bignumber(market.buy).toFixed(),
